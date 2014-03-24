@@ -32,11 +32,11 @@
 		_maxValue = 100.0;
 		_centerPoint = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
 		_r = MIN(self.frame.size.width / 2 - PADDING, self.frame.size.height / 2 - PADDING);
-		_steps = 1;
+		_steps = 4;
 		_drawPoints = NO;
 		_showLegend = NO;
 		_showStepText = NO;
-        _fillArea = NO;
+        _fillArea = YES;
 		_minValue = 0;
         _colorOpacity = 1.0;
 		_backgroundLineColor = [UIColor darkGrayColor];
@@ -212,7 +212,33 @@
 		else {
 			CGContextStrokePath(context);
 		}
-        
+		
+		
+		CGContextSetLineWidth(context, 1.0);
+		
+		//draw lines
+		for (int serie = 0; serie < [_dataSeries count]; serie++)
+		{
+			
+			[[UIColor blackColor] setStroke];
+			for (int i = 0; i < _numOfV; ++i)
+			{
+				CGFloat value = [_dataSeries[serie][i] floatValue];
+				if (i == 0)
+				{
+					CGContextMoveToPoint(context, _centerPoint.x, _centerPoint.y - (value - _minValue) / (_maxValue - _minValue) * _r);
+				}
+				else
+				{
+					CGContextAddLineToPoint(context, _centerPoint.x - (value - _minValue) / (_maxValue - _minValue) * _r * sin(i * radPerV),
+											_centerPoint.y - (value - _minValue) / (_maxValue - _minValue) * _r * cos(i * radPerV));
+				}
+			}
+			CGFloat value = [_dataSeries[serie][0] floatValue];
+			CGContextAddLineToPoint(context, _centerPoint.x, _centerPoint.y - (value - _minValue) / (_maxValue - _minValue) * _r);
+			
+			CGContextStrokePath(context);
+		}
         
 		//draw data points
 		if (_drawPoints) {
