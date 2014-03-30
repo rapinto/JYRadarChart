@@ -11,7 +11,7 @@
 
 #define PADDING 13
 #define LEGEND_PADDING 3
-#define ATTRIBUTE_TEXT_SIZE 10
+#define ATTRIBUTE_TEXT_SIZE 8
 #define COLOR_HUE_STEP 5
 #define MAX_NUM_OF_COLOR 17
 
@@ -141,13 +141,18 @@
                        withAttributes:attributes];
         }
         else {
+			NSMutableParagraphStyle* style = [[NSMutableParagraphStyle alloc] init];
+			[style setAlignment:NSTextAlignmentCenter];
+			[style setLineBreakMode:NSLineBreakByClipping];
+			
+			NSDictionary* lAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:ATTRIBUTE_TEXT_SIZE], NSFontAttributeName,
+										 style, NSParagraphStyleAttributeName, nil];
+			
             [attributeName drawInRect:CGRectMake(legendCenter.x - width / 2.0,
                                                  legendCenter.y - height / 2.0,
                                                  width,
                                                  height)
-                             withFont:self.scaleFont
-                        lineBreakMode:NSLineBreakByClipping
-                            alignment:NSTextAlignmentCenter];
+					   withAttributes:lAttributes];            
         }
     }
     
